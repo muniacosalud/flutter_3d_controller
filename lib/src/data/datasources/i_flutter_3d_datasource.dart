@@ -44,6 +44,16 @@ abstract class IFlutter3DDatasource {
   ///It will execute custom JS code and returns result
   Future<dynamic> executeCustomJsCodeWithResult(String code);
 
+  /// Cambia el peso de un morph target específico
+  void setMorphTarget(
+      {required String morphTargetName, required double weight});
+
+  /// Restablece todos los morph targets a sus valores por defecto
+  void resetMorphTargets();
+
+  /// Obtiene la lista de morph targets disponibles en el modelo
+  Future<List<String>> getAvailableMorphTargets();
+
   ///It will make specific instance of datasource per platform
   factory IFlutter3DDatasource(
           viewerId, webViewController, activeGestureInterceptor) =>

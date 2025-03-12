@@ -75,6 +75,9 @@ abstract class HTMLBuilder {
     final String? relatedJs,
     final String? id,
     final bool? debugLogging,
+    // morph targets
+    final List<String>?
+        morphTargets, // <- Lista de morph targets que activaremos
   }) {
     if (relatedCss != null) {
       // ignore: parameter_assignments
@@ -91,6 +94,7 @@ abstract class HTMLBuilder {
     if (alt != null) {
       modelViewerHtml.write(' alt="${htmlEscape.convert(alt)}"');
     }
+
     // poster
     if (poster != null) {
       modelViewerHtml.write(' poster="${htmlEscape.convert(poster)}"');
@@ -376,9 +380,9 @@ abstract class HTMLBuilder {
     }
     modelViewerHtml.write('"'); // close style
 
-    if (id != null) {
-      modelViewerHtml.write(' id="${htmlEscape.convert(id)}"');
-    }
+    final modelViewerId =
+        id ?? 'model-viewer-${DateTime.now().millisecondsSinceEpoch}';
+    modelViewerHtml.write(' id="$modelViewerId"');
 
     modelViewerHtml.writeln('>'); // close the previous tag of model-viewer
     if (innerModelViewerHtml != null) {
@@ -391,6 +395,30 @@ abstract class HTMLBuilder {
         ..writeln('<script>')
         ..write(relatedJs)
         ..writeln('</script>');
+    }
+
+    if (morphTargets != null && morphTargets.isNotEmpty) {
+      final morphTargetsJs = '''
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const modelViewer = document.getElementById("$modelViewerId");
+      modelViewer.addEventListener("load", () => {
+        const scene = modelViewer.model;
+        const morphTargets = scene?.materials?.flatMap(m => m.pbrMetallicRoughness.baseColorTexture?.texture?.source?.images) || [];
+        
+        // Aplicar morph targets con valores iniciales
+        morphTargets.forEach((target, index) => {
+          if (target && target.name) {
+            modelViewer.model.setMorphTargetInfluences(target.name, 0.5); // Ajusta el valor según lo necesites
+          }
+        });
+
+        console.log("Morph Targets activados:", morphTargets);
+      });
+    });
+  </script>
+  ''';
+      modelViewerHtml.writeln(morphTargetsJs);
     }
 
     if (debugLogging ?? false) {

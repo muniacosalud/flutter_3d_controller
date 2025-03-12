@@ -34,4 +34,11 @@ abstract class IFlutter3DRepository {
 
   /// Causes camera target reset to default value
   void resetCameraOrbit();
+
+  void setMorphTarget(
+      {required String morphTargetName, required double weight});
+
+  void resetMorphTargets();
+
+  Future<List<String>> getAvailableMorphTargets();
 }

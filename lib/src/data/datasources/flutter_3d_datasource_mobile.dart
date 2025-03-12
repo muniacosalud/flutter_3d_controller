@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_3d_controller/src/core/exception/flutter_3d_controller_exception.dart';
 import 'package:flutter_3d_controller/src/data/datasources/i_flutter_3d_datasource.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -170,5 +172,47 @@ class Flutter3DDatasource implements IFlutter3DDatasource {
   Future<dynamic> executeCustomJsCodeWithResult(String code) async {
     final result = await _webViewController?.evaluateJavascript(source: code);
     return result;
+  }
+
+  @override
+  void setMorphTarget(
+      {required String morphTargetName, required double weight}) {
+    executeCustomJsCode(
+      "const modelViewer = document.getElementById(\"$_viewerId\");"
+      "if (modelViewer.model) {"
+      "  modelViewer.model.setMorphTargetInfluence('$morphTargetName', $weight);"
+      "}",
+    );
+  }
+
+  @override
+  void resetMorphTargets() {
+    executeCustomJsCode(
+      "const modelViewer = document.getElementById(\"$_viewerId\");"
+      "if (modelViewer.model) {"
+      "  modelViewer.model.resetMorphTargets();"
+      "}",
+    );
+  }
+
+  @override
+  Future<List<String>> getAvailableMorphTargets() async {
+    try {
+      final rawMorphTargets = await executeCustomJsCodeWithResult(
+          "JSON.stringify(document.getElementById(\"$_viewerId\").model.morphTargetDictionary);");
+
+      if (rawMorphTargets is String) {
+        final Map<String, dynamic> morphTargetsMap = Map<String, dynamic>.from(
+          rawMorphTargets.isNotEmpty ? jsonDecode(rawMorphTargets) : {},
+        );
+        return morphTargetsMap.keys.toList();
+      }
+
+      return [];
+    } catch (e) {
+      throw Flutter3dControllerFormatException(
+        message: 'Failed to retrieve morph targets list, ${e.toString()}',
+      );
+    }
   }
 }

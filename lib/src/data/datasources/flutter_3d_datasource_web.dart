@@ -128,4 +128,21 @@ class Flutter3DDatasource implements IFlutter3DDatasource {
         await js.context.callMethod("customEvaluateWithResult", [code]);
     return result.toList();
   }
+
+  @override
+  Future<List<String>> getAvailableMorphTargets() {
+    // TODO: implement getAvailableMorphTargets
+    throw UnimplementedError();
+  }
+
+  @override
+  void resetMorphTargets() {
+    // TODO: implement resetMorphTargets
+  }
+
+  @override
+  void setMorphTarget(
+      {required String morphTargetName, required double weight}) {
+    // TODO: implement setMorphTarget
+  }
 }

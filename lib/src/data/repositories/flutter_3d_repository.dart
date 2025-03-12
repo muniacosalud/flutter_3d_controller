@@ -59,4 +59,21 @@ class Flutter3DRepository extends IFlutter3DRepository {
   void resetCameraOrbit() {
     _datasource.resetCameraOrbit();
   }
+
+  @override
+  void setMorphTarget(
+      {required String morphTargetName, required double weight}) {
+    _datasource.setMorphTarget(
+        morphTargetName: morphTargetName, weight: weight);
+  }
+
+  @override
+  void resetMorphTargets() {
+    _datasource.resetMorphTargets();
+  }
+
+  @override
+  Future<List<String>> getAvailableMorphTargets() async {
+    return await _datasource.getAvailableMorphTargets();
+  }
 }

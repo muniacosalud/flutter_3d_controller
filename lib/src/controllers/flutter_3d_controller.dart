@@ -112,4 +112,33 @@ class Flutter3DController extends IFlutter3DController {
       throw Flutter3dControllerLoadingException();
     }
   }
+
+  @override
+  void setMorphTarget(
+      {required String morphTargetName, required double weight}) {
+    if (onModelLoaded.value) {
+      _repository?.setMorphTarget(
+          morphTargetName: morphTargetName, weight: weight);
+    } else {
+      throw Flutter3dControllerLoadingException();
+    }
+  }
+
+  @override
+  void resetMorphTargets() {
+    if (onModelLoaded.value) {
+      _repository?.resetMorphTargets();
+    } else {
+      throw Flutter3dControllerLoadingException();
+    }
+  }
+
+  @override
+  Future<List<String>> getAvailableMorphTargets() async {
+    if (onModelLoaded.value) {
+      return await _repository?.getAvailableMorphTargets() ?? [];
+    } else {
+      throw Flutter3dControllerLoadingException();
+    }
+  }
 }

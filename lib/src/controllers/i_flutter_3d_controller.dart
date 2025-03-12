@@ -13,6 +13,13 @@ abstract class IFlutter3DController {
   /// Causes animation to be stopped
   void stopAnimation();
 
+  void setMorphTarget(
+      {required String morphTargetName, required double weight});
+
+  void resetMorphTargets();
+
+  Future<List<String>> getAvailableMorphTargets();
+
   /// It will return available animations list of 3D model as [List<String>]
   Future<List<String>> getAvailableAnimations();
 
